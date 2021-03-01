@@ -1,4 +1,91 @@
 - commits:
+    - subject: 'tests/test-data/pkg: Add new expected warnings darwin/linux'
+      hash: e387b5058c9ee8e0db415cda88ce01eaad5e5b8e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: 'tests/utils/eol-conversion: Remove ext2fs sample binary'
+      hash: b9c4c5042af43efe1a40ee72cd6421b76cc30cfa
+      body: |
+        Specifically ext2fs/build/Release/bindings.node
+        I removed it because the file doesn't exist
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: 'package: Install dependencies that work with node14'
+      hash: 9b2f93719a0d7627376f041486d0880e42d1dc80
+      body: ''
+      footer:
+        Resolves: '#2079'
+        resolves: '#2079'
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: Fix etcher-sdk related types
+      hash: 7adc0b53b680cda074d784da2a565ceb791182ea
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: Bump etcher-sdk to 5.2.2
+      hash: 97d65682700327f00eb32d20d2544f93ca6d52d9
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: Remove resin-image-fs typings
+      hash: 8442eb1d58225e752a7d748b439aeb74fe261709
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: 'package.json: Remove resin-image-fs package'
+      hash: cf96f39dffbfcde81c5c0d0a4ff11ab9a7ef7c1b
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+    - subject: Replace old resin-image-fs with newer balena-image-fs
+      hash: 116485dd74b14358725e04d63e9d03c975602165
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+        signed-off-by: Marios Balamatsias <mbalamatsias@gmail.com>
+      author: Marios Balamatsias
+      nested: []
+  version: 12.41.0
+  date: 2021-03-01T14:52:59.836Z
+- commits:
     - subject: 'docs: Fix missing markdown docs for device `deactivate` and `local-mode`'
       hash: b90c9b0d7e59353101213c6be22eaff9a9c0b274
       body: ''
