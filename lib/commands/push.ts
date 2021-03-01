@@ -288,6 +288,9 @@ export default class PushCmd extends Command {
 			PushCmd,
 		);
 
+		const { parseBuildArgs } = await import('../utils/docker');
+		const buildargs = parseBuildArgs(options.buildArg || []);
+
 		const logger = await Command.getLogger();
 		logger.logDebug(`Using build source directory: ${options.source} `);
 
@@ -315,6 +318,7 @@ export default class PushCmd extends Command {
 					sdk,
 					dockerfilePath,
 					registrySecrets,
+					buildargs,
 				);
 				break;
 
@@ -327,6 +331,7 @@ export default class PushCmd extends Command {
 					options,
 					dockerfilePath,
 					registrySecrets,
+					buildargs,
 				);
 				break;
 		}
@@ -338,6 +343,7 @@ export default class PushCmd extends Command {
 		sdk: BalenaSDK,
 		dockerfilePath: string,
 		registrySecrets: RegistrySecrets,
+		buildargs: Dictionary<string>,
 	) {
 		const remote = await import('../utils/remote-build');
 		const { getApplication } = await import('../utils/sdk');
@@ -377,7 +383,7 @@ export default class PushCmd extends Command {
 			registrySecrets,
 			headless: options.detached,
 			convertEol: !options['noconvert-eol'],
-			buildArgs: options.buildArg || [],
+			buildargs,
 		};
 		const args = {
 			appSlug: application.slug,
@@ -408,6 +414,7 @@ export default class PushCmd extends Command {
 		options: FlagsDef,
 		dockerfilePath: string,
 		registrySecrets: RegistrySecrets,
+		buildargs: Dictionary<string>,
 	) {
 		// Check for invalid options
 		const remoteOnlyOptions: Array<keyof FlagsDef> = ['release-tag'];
@@ -436,7 +443,7 @@ export default class PushCmd extends Command {
 				system: options.system,
 				env: options.env || [],
 				convertEol: !options['noconvert-eol'],
-				buildArgs: options.buildArg || [],
+				buildargs,
 			});
 		} catch (e) {
 			const { BuildError } = await import('../utils/device/errors');
