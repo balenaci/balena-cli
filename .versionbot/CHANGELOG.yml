@@ -1,4 +1,43 @@
 - commits:
+    - subject: Harmonize --buildArg flag treatment between build/deploy/push commands
+      hash: ecc790a0d577c982cf5a54afcb9c6d8eec05d782
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Paulo Castro
+      nested: []
+    - subject: Add tests for `push --buildArgs` and refactor logic
+      hash: 7fee7a67a3a4b053ddceb7a40f383e2ceb9347d5
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Paulo Castro
+      nested: []
+    - subject: Various review fixes
+      hash: 90a450b274eba293604b81f23360d9805b8dd6e3
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Josh Bowling <josh@balena.io>
+        signed-off-by: Josh Bowling <josh@balena.io>
+      author: Josh Bowling
+      nested: []
+    - subject: Add --buildArg support for push command
+      hash: 906faa363193378e7becd9bb3d27c451bf3cb6b0
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Josh Bowling <josh@balena.io>
+        signed-off-by: Josh Bowling <josh@balena.io>
+      author: Josh Bowling
+      nested: []
+  version: 12.41.0
+  date: 2021-03-01T01:13:43.851Z
+- commits:
     - subject: Add support for docker-compose dev overlay in local pushes
       hash: f3d750a0247ae0f272392666d9d243ed65e8e4e6
       body: ''
