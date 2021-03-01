@@ -1,27 +1,42 @@
 - commits:
-    - subject: 'docs: Fix missing markdown docs for device `deactivate` and `local-mode`'
-      hash: b90c9b0d7e59353101213c6be22eaff9a9c0b274
+    - subject: Harmonize --buildArg flag treatment between build/deploy/push commands
+      hash: ecc790a0d577c982cf5a54afcb9c6d8eec05d782
       body: ''
       footer:
         Change-type: patch
         change-type: patch
       author: Paulo Castro
       nested: []
-  version: 12.40.2
-  date: 2021-02-23T22:17:49.326Z
-- commits:
-    - subject: 'docs: emphasize that push emulation is not required in most cases'
-      hash: c8e4d2c9a69e23ea0d324fadd424340a67ba9a08
+    - subject: Add tests for `push --buildArgs` and refactor logic
+      hash: 7fee7a67a3a4b053ddceb7a40f383e2ceb9347d5
       body: ''
       footer:
         Change-type: patch
         change-type: patch
-        Signed-off-by: Kyle Harding <kyle@balena.io>
-        signed-off-by: Kyle Harding <kyle@balena.io>
-      author: Kyle Harding
+      author: Paulo Castro
       nested: []
-  version: 12.40.1
-  date: 2021-02-23T13:58:03.059Z
+    - subject: Various review fixes
+      hash: 90a450b274eba293604b81f23360d9805b8dd6e3
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Josh Bowling <josh@balena.io>
+        signed-off-by: Josh Bowling <josh@balena.io>
+      author: Josh Bowling
+      nested: []
+    - subject: Add --buildArg support for push command
+      hash: 906faa363193378e7becd9bb3d27c451bf3cb6b0
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Josh Bowling <josh@balena.io>
+        signed-off-by: Josh Bowling <josh@balena.io>
+      author: Josh Bowling
+      nested: []
+  version: 12.41.0
+  date: 2021-03-01T01:11:02.497Z
 - commits:
     - subject: Add support for docker-compose dev overlay in local pushes
       hash: f3d750a0247ae0f272392666d9d243ed65e8e4e6
