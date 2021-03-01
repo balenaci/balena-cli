@@ -17,6 +17,7 @@
 
 import { flags } from '@oclif/command';
 import type * as BalenaSdk from 'balena-sdk';
+import { promisify } from 'util';
 import * as _ from 'lodash';
 import Command from '../../command';
 import { ExpectedError } from '../../errors';
@@ -279,17 +280,16 @@ export default class OsConfigureCmd extends Command {
 					};
 				}),
 			);
-			const imagefs = await import('resin-image-fs');
+
+			const imagefs = await import('balena-image-fs');
 
 			for (const { name, content } of files) {
-				await imagefs.writeFile(
-					{
-						image,
-						partition: BOOT_PARTITION,
-						path: path.join(CONNECTIONS_FOLDER, name),
-					},
-					content,
-				);
+				await imagefs.interact(image, BOOT_PARTITION, async (_fs) => {
+					return await promisify(_fs.writeFile)(
+						path.join(CONNECTIONS_FOLDER, name),
+						content,
+					);
+				});
 				console.info(`Copied system-connection file: ${name}`);
 			}
 		}

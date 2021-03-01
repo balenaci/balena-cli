@@ -16,6 +16,7 @@
  */
 
 import { flags } from '@oclif/command';
+import { BlockDevice } from 'etcher-sdk/build/source-destination';
 import Command from '../../command';
 import { ExpectedError } from '../../errors';
 import * as cf from '../../utils/common-flags';
@@ -25,7 +26,6 @@ import {
 	getVisuals,
 	stripIndent,
 } from '../../utils/lazy';
-import type * as SDK from 'etcher-sdk';
 
 interface FlagsDef {
 	yes: boolean;
@@ -93,10 +93,9 @@ export default class LocalFlashCmd extends Command {
 			process.exit(0);
 		}
 
-		const file = new sourceDestination.File(
-			params.image,
-			sourceDestination.File.OpenFlags.Read,
-		);
+		const file = new sourceDestination.File({
+			path: params.image,
+		});
 		const source = await file.getInnerSource();
 
 		const visuals = getVisuals();
@@ -105,29 +104,27 @@ export default class LocalFlashCmd extends Command {
 			verifying: new visuals.Progress('Validating'),
 		};
 
-		await multiWrite.pipeSourceToDestinations(
+		await multiWrite.pipeSourceToDestinations({
 			source,
-			[drive],
-			(_, error) => {
-				// onFail
+			destinations: [drive],
+			onFail: (_, error) => {
 				console.log(getChalk().red.bold(error.message));
 			},
-			(progress: SDK.multiWrite.MultiDestinationProgress) => {
-				// onProgress
+			onProgress: (progress) => {
 				progressBars[progress.type].update(progress);
 			},
-			true, // verify
-		);
+			verify: true,
+		});
 	}
 
-	async getDrive(options: {
-		drive?: string;
-	}): Promise<SDK.sourceDestination.BlockDevice> {
+	async getDrive(options: { drive?: string }): Promise<BlockDevice> {
 		const drive = options.drive || (await getVisuals().drive('Select a drive'));
 
 		const sdk = await import('etcher-sdk');
 
-		const adapter = new sdk.scanner.adapters.BlockDeviceAdapter(() => false);
+		const adapter = new sdk.scanner.adapters.BlockDeviceAdapter({
+			includeSystemDrives: () => false,
+		});
 		const scanner = new sdk.scanner.Scanner([adapter]);
 		await scanner.start();
 		try {
