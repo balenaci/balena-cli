@@ -66,6 +66,7 @@ export interface DeviceDeployOptions {
 	system: boolean;
 	env: string[];
 	convertEol: boolean;
+	buildargs: Dictionary<string>;
 }
 
 interface ParsedEnvironment {
@@ -202,6 +203,7 @@ export async function deployToDevice(opts: DeviceDeployOptions): Promise<void> {
 		convertEol: opts.convertEol,
 		multiDockerignore: opts.multiDockerignore,
 		nogitignore: opts.nogitignore,
+		buildargs: opts.buildargs,
 	});
 
 	// Try to detect the device information
@@ -427,6 +429,7 @@ export async function rebuildSingleTask(
 		convertEol: opts.convertEol,
 		multiDockerignore: opts.multiDockerignore,
 		nogitignore: opts.nogitignore,
+		buildargs: opts.buildargs,
 	});
 
 	const task = _.find(

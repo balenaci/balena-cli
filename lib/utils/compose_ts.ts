@@ -36,6 +36,7 @@ import {
 	ComposeCliFlags,
 	ComposeOpts,
 	ComposeProject,
+	ParsedBuildArguments,
 	Release,
 	TaggedImage,
 	TarDirectoryOptions,
@@ -43,6 +44,44 @@ import {
 import type { DeviceInfo } from './device/api';
 import { getBalenaSdk, getChalk, stripIndent } from './lazy';
 import Logger = require('./logger');
+
+/**
+ * Parse build argument input from flags like `--buildArg service1:var1=value1`
+ * to produce an object in a similar format as the build-variables section of
+ * the `./.balena/balena.yml` file, separating service-specific build arguments
+ * from global build arguments.
+ * @param buildargs --buildArg flag input in dictionary format
+ */
+async function parseMetadataFromFlags(
+	buildargs: Dictionary<string>,
+	composition?: Composition,
+): Promise<ParsedBuildArguments> {
+	const serviceNames = Object.keys(composition?.services || {});
+	const ret: ParsedBuildArguments = {
+		global: {},
+		services: {},
+	};
+
+	for (const [argSpec, argValue] of Object.entries(buildargs)) {
+		const i = argSpec.indexOf(':', 1);
+		const service = i > 0 ? argSpec.substring(0, i) : '';
+		const argName = i > 0 ? argSpec.substring(i + 1) : argSpec;
+		if (service && !(service in serviceNames)) {
+			throw new ExpectedError(
+				`Cannot find a service with name ${service} specified in build argument: ${argSpec}`,
+			);
+		}
+		// Set build argument either as global or service specific
+		if (service) {
+			ret.services[service] ||= {};
+			ret.services[service][argName] = argValue;
+		} else {
+			ret.global[argName] = argValue;
+		}
+	}
+
+	return ret;
+}
 
 /**
  * Given an array representing the raw `--release-tag` flag of the deploy and
@@ -252,6 +291,7 @@ export async function buildProject(opts: {
 	dockerfilePath?: string;
 	nogitignore: boolean;
 	multiDockerignore: boolean;
+	buildargs: Dictionary<string>;
 }): Promise<BuiltImage[]> {
 	const { logger, projectName } = opts;
 	logger.logInfo(`Building for ${opts.arch}/${opts.deviceType}`);
@@ -599,7 +639,7 @@ async function inspectBuiltImage({
  * "build variables".
  * @returns Pair of metadata object and metadata file path
  */
-async function loadBuildMetatada(
+async function loadBuildMetadata(
 	sourceDir: string,
 ): Promise<[MultiBuild.ParsedBalenaYml, string]> {
 	let metadataPath = '';
@@ -731,6 +771,59 @@ export async function tarDirectory(
 }
 
 /**
+ * Add or override a `build-variables` section in the `.balena/balena.yml`
+ * metadata file, with the contents of any `--buildArgs` flags provided
+ * on the command line (so that the command line flags take precedence).
+ */
+function mergeMetadataFromFlags(
+	metadataPath: string,
+	metadataFromFile: MultiBuild.ParsedBalenaYml,
+	metadataFromFlags: ParsedBuildArguments,
+): string {
+	const { parseBuildArgs } = require('./docker') as typeof import('./docker');
+	metadataFromFile['build-variables'] ||= {};
+	const bvars = metadataFromFile['build-variables'];
+
+	// Convert build variable arrays to dictionaries if necessary
+	if (Array.isArray(bvars.global)) {
+		bvars.global = parseBuildArgs(bvars.global);
+	}
+	for (const [service, vars] of Object.entries(bvars.services || {})) {
+		if (Array.isArray(vars)) {
+			bvars.services![service] = parseBuildArgs(vars);
+		}
+	}
+
+	// Set build variables if specified
+	if (!_.isEmpty(metadataFromFlags.global)) {
+		bvars.global = {
+			...bvars.global,
+			...metadataFromFlags.global,
+		};
+	}
+	if (!_.isEmpty(metadataFromFlags.services)) {
+		bvars.services ||= {};
+		for (const [service, vars] of Object.entries(bvars.services)) {
+			bvars.services[service] = {
+				...vars,
+				...metadataFromFlags.services[service],
+			};
+		}
+	}
+
+	if (metadataPath.endsWith('json')) {
+		return JSON.stringify(metadataFromFile, null, 4);
+	} else {
+		return (require('js-yaml') as typeof import('js-yaml')).dump(
+			metadataFromFile,
+			{
+				indent: 4,
+			},
+		);
+	}
+}
+
+/**
  * Create a tar stream out of the local filesystem at the given directory,
  * while optionally applying file filters such as '.dockerignore' and
  * optionally converting text file line endings (CRLF to LF).
@@ -746,6 +839,7 @@ async function newTarDirectory(
 		multiDockerignore = false,
 		nogitignore = false,
 		preFinalizeCallback,
+		buildargs = {},
 	}: TarDirectoryOptions,
 ): Promise<import('stream').Readable> {
 	(await import('assert')).strict.equal(nogitignore, true);
@@ -759,6 +853,18 @@ async function newTarDirectory(
 	} else {
 		readFile = fs.readFile;
 	}
+
+	// Get balena config so we can set extra build variables if provided
+	const metadataFromFlags = await parseMetadataFromFlags(
+		buildargs,
+		composition,
+	);
+	const [metadataFromFile, rawPath] = await loadBuildMetadata(dir);
+	// const metadata = buildMetadata[0];
+
+	// dir and metadataPath are either both relative or both absolute
+	const metadataPath = path.normalize(path.relative(dir, rawPath));
+
 	const tar = await import('tar-stream');
 	const pack = tar.pack();
 	const serviceDirs = await getServiceDirsFromComposition(dir, composition);
@@ -766,8 +872,22 @@ async function newTarDirectory(
 		filteredFileList,
 		dockerignoreFiles,
 	} = await filterFilesWithDockerignore(dir, multiDockerignore, serviceDirs);
+
 	printDockerignoreWarn(dockerignoreFiles, serviceDirs, multiDockerignore);
+
+	let foundConfig = false;
 	for (const fileStats of filteredFileList) {
+		let buf: Buffer | string;
+		if (metadataPath && fileStats.relPath === metadataPath) {
+			buf = mergeMetadataFromFlags(
+				metadataPath,
+				metadataFromFile,
+				metadataFromFlags,
+			);
+			foundConfig = true;
+		} else {
+			buf = await readFile(fileStats.filePath);
+		}
 		pack.entry(
 			{
 				name: toPosixPath(fileStats.relPath),
@@ -775,7 +895,26 @@ async function newTarDirectory(
 				mode: fileStats.stats.mode,
 				size: fileStats.stats.size,
 			},
-			await readFile(fileStats.filePath),
+			buf,
+		);
+	}
+	if (
+		!foundConfig &&
+		(!_.isEmpty(metadataFromFlags.global) ||
+			!_.isEmpty(metadataFromFlags.services))
+	) {
+		const configData = mergeMetadataFromFlags(
+			'.balena/balena.yml',
+			{},
+			metadataFromFlags,
+		);
+		const buf = Buffer.from(configData);
+		pack.entry(
+			{
+				name: '.balena/balena.yml',
+				size: buf.length,
+			},
+			buf,
 		);
 	}
 	if (preFinalizeCallback) {
@@ -918,7 +1057,7 @@ export async function checkBuildSecretsRequirements(
 	docker: Dockerode,
 	sourceDir: string,
 ) {
-	const [metaObj, metaFilename] = await loadBuildMetatada(sourceDir);
+	const [metaObj, metaFilename] = await loadBuildMetadata(sourceDir);
 	if (metaObj && !_.isEmpty(metaObj['build-secrets'])) {
 		const dockerUtils = await import('./docker');
 		const isBalenaEngine = await dockerUtils.isBalenaEngine(docker);

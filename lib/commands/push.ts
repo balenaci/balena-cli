@@ -58,6 +58,7 @@ interface FlagsDef {
 	'noconvert-eol': boolean;
 	'multi-dockerignore': boolean;
 	'release-tag'?: string[];
+	buildArg?: string[];
 	help: void;
 }
 
@@ -267,6 +268,17 @@ export default class PushCmd extends Command {
 			multiple: true,
 			exclusive: ['detached'],
 		}),
+		buildArg: flags.string({
+			description: stripIndent`
+				Set a build-time variable (eg. "-B \'ARG=value\'"). Can be specified multiple times.
+				Build arguments can be applied to individual services by adding their service name
+				before the argument, separated by a colon, e.g:
+					--buildArg main:MY_ENV=value
+				Note that if the service name cannot be found in the composition, the entire
+				left hand side of the = character will be treated as the variable name.`,
+			char: 'B',
+			multiple: true,
+		}),
 		help: cf.help,
 	};
 
@@ -276,6 +288,9 @@ export default class PushCmd extends Command {
 		const { args: params, flags: options } = this.parse<FlagsDef, ArgsDef>(
 			PushCmd,
 		);
+
+		const { parseBuildArgs } = await import('../utils/docker');
+		const buildargs = parseBuildArgs(options.buildArg || []);
 
 		const logger = await Command.getLogger();
 		logger.logDebug(`Using build source directory: ${options.source} `);
@@ -304,6 +319,7 @@ export default class PushCmd extends Command {
 					sdk,
 					dockerfilePath,
 					registrySecrets,
+					buildargs,
 				);
 				break;
 
@@ -316,6 +332,7 @@ export default class PushCmd extends Command {
 					options,
 					dockerfilePath,
 					registrySecrets,
+					buildargs,
 				);
 				break;
 		}
@@ -327,6 +344,7 @@ export default class PushCmd extends Command {
 		sdk: BalenaSDK,
 		dockerfilePath: string,
 		registrySecrets: RegistrySecrets,
+		buildargs: Dictionary<string>,
 	) {
 		const remote = await import('../utils/remote-build');
 		const { getApplication } = await import('../utils/sdk');
@@ -366,6 +384,7 @@ export default class PushCmd extends Command {
 			registrySecrets,
 			headless: options.detached,
 			convertEol: !options['noconvert-eol'],
+			buildargs,
 		};
 		const args = {
 			appSlug: application.slug,
@@ -396,6 +415,7 @@ export default class PushCmd extends Command {
 		options: FlagsDef,
 		dockerfilePath: string,
 		registrySecrets: RegistrySecrets,
+		buildargs: Dictionary<string>,
 	) {
 		// Check for invalid options
 		const remoteOnlyOptions: Array<keyof FlagsDef> = ['release-tag'];
@@ -424,6 +444,7 @@ export default class PushCmd extends Command {
 				system: options.system,
 				env: options.env || [],
 				convertEol: !options['noconvert-eol'],
+				buildargs,
 			});
 		} catch (e) {
 			const { BuildError } = await import('../utils/device/errors');
