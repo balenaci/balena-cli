@@ -1,27 +1,15 @@
 - commits:
-    - subject: 'docs: Fix missing markdown docs for device `deactivate` and `local-mode`'
-      hash: b90c9b0d7e59353101213c6be22eaff9a9c0b274
-      body: ''
+    - subject: (not for merging) Exercise balena CI / Concourse
+      hash: c5455611fc99caeb49076d24b0ef2ecbc8f27e24
+      body: >
+        https://www.flowdock.com/app/rulemotion/r-etcherprv/threads/pU03mBlvBkhWsECXSLd5NQsMJ_w
       footer:
         Change-type: patch
         change-type: patch
       author: Paulo Castro
       nested: []
-  version: 12.40.2
-  date: 2021-02-23T22:17:49.326Z
-- commits:
-    - subject: 'docs: emphasize that push emulation is not required in most cases'
-      hash: c8e4d2c9a69e23ea0d324fadd424340a67ba9a08
-      body: ''
-      footer:
-        Change-type: patch
-        change-type: patch
-        Signed-off-by: Kyle Harding <kyle@balena.io>
-        signed-off-by: Kyle Harding <kyle@balena.io>
-      author: Kyle Harding
-      nested: []
   version: 12.40.1
-  date: 2021-02-23T13:58:03.059Z
+  date: 2021-03-05T18:07:35.034Z
 - commits:
     - subject: Add support for docker-compose dev overlay in local pushes
       hash: f3d750a0247ae0f272392666d9d243ed65e8e4e6
