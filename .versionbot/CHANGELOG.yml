@@ -1,4 +1,16 @@
 - commits:
+    - subject: (not for merging) Exercise balena CI / Concourse
+      hash: c5455611fc99caeb49076d24b0ef2ecbc8f27e24
+      body: >
+        https://www.flowdock.com/app/rulemotion/r-etcherprv/threads/pU03mBlvBkhWsECXSLd5NQsMJ_w
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Paulo Castro
+      nested: []
+  version: 12.40.1
+  date: 2021-03-05T18:51:13.938Z
+- commits:
     - subject: Add support for docker-compose dev overlay in local pushes
       hash: f3d750a0247ae0f272392666d9d243ed65e8e4e6
       body: ''
