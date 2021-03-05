@@ -1,4 +1,15 @@
 - commits:
+    - subject: 'macOS GUI installer: Update signing certificate name'
+      hash: c0261961fdb47f883f6da36f912ae126c136b89e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Paulo Castro
+      nested: []
+  version: 12.40.3
+  date: 2021-03-05T23:45:03.788Z
+- commits:
     - subject: 'docs: Fix missing markdown docs for device `deactivate` and `local-mode`'
       hash: b90c9b0d7e59353101213c6be22eaff9a9c0b274
       body: ''
