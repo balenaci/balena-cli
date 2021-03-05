@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update README.md
+      hash: a65a412dca01ce7ee5622581bf41ace063f5cccf
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Giovanni Garufi
+      nested: []
+  version: 12.40.3
+  date: 2021-03-05T17:16:37.726Z
+- commits:
     - subject: 'docs: Fix missing markdown docs for device `deactivate` and `local-mode`'
       hash: b90c9b0d7e59353101213c6be22eaff9a9c0b274
       body: ''
