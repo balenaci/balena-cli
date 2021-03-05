@@ -1,4 +1,4 @@
-# balena CLI
+ # balena CLI
 
 The official balena Command Line Interface.
 
