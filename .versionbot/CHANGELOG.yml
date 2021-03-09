@@ -1,4 +1,71 @@
 - commits:
+    - subject: Update signing to work for .node files
+      hash: a2902c9fbfe16bea45df0d3c6e4fe28dd4974c32
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Move changes into new repo
+      hash: 9a2e0d7c1202d0bdc13cf924180ea4295a71e1a3
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Move notarization into macos only
+      hash: 8ca999be738b620d1cd4e00e9cd3fc9e2e5664f1
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Remove net-keepalive dependency
+      hash: 73f9783d5fd5154f55fc35f13fd5694ea80e6680
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Fix path
+      hash: ea41dfb379004e2e5df1a02c4ed41dc27d35df9c
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Fixed optional dependencies
+      hash: 824a2683b0fbd5f4695b5f875451e9bb7a1b82ae
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Fixed lockfile and shrinkwrap file
+      hash: 999b9689dda258a54b852258f8bd7f7caf16ce28
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+    - subject: Update macOS installer to avoid Apple's warning pop-up
+      hash: ade168bad57c45089e69054e9733831d3485ab1c
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Dan Goodman
+      nested: []
+  version: 12.40.1
+  date: 2021-03-09T20:22:12.537Z
+- commits:
     - subject: Add support for docker-compose dev overlay in local pushes
       hash: f3d750a0247ae0f272392666d9d243ed65e8e4e6
       body: ''
