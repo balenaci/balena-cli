@@ -395,10 +395,12 @@
 						 return;
 					 }
 					 if (path.basename(item.path).endsWith('.node')) {
-						 await whichSpawn('productsign', [
-							 '--sign',
-							 'Developer ID Installer: Rulemotion Ltd (66H43P8FRG)',
-							 item.path,
+						 await whichSpawn('codesign', [
+							 '-d',
+							 '-f',
+							 '-s',
+							 'Developer ID Application: Balena Ltd (66H43P8FRG)',
+							 item.path
 						 ]); // Replace with signed versions
 					 }
 				 })
